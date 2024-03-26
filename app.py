@@ -43,7 +43,7 @@ os.environ["OPENAI_API_KEY"] = os.getenv('OPENAI_API_KEY')
 def event_planner_qa():
     path = utils.get_files_in_directory('data')
     planner_qa = QABot.docx_qa(
-        input_files=[Path(str(path[0]))]
+        input_files=[Path(str(path[1]))]
     )
 
     return planner_qa
