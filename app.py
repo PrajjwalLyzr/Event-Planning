@@ -2,6 +2,7 @@ import os
 from PIL import Image
 import streamlit as st
 from pathlib import Path
+from utils import utils
 from dotenv import load_dotenv; load_dotenv()
 from lyzr import QABot
 
@@ -40,8 +41,9 @@ os.environ["OPENAI_API_KEY"] = os.getenv('OPENAI_API_KEY')
 
 
 def event_planner_qa():
+    path = utils.get_files_in_directory('data')
     planner_qa = QABot.docx_qa(
-        input_files=[Path('data\Event Planner Assistnace.docx')]
+        input_files=[Path(str(path[0]))]
     )
 
     return planner_qa
@@ -61,11 +63,14 @@ if __name__ == "__main__":
         st.subheader('Plan your dream event!')
         question = st.text_input('Write you query')
         if st.button('Submit'):
-            event_agent = event_planner_qa()
-            response = event_agent.query(question)
-            st.markdown('---')
-            st.subheader('Response')
-            st.write(response.response)
+            if question is not None:
+                event_agent = event_planner_qa()
+                response = event_agent.query(question)
+                st.markdown('---')
+                st.subheader('Response')
+                st.write(response.response)
+            else:
+                st.warning("Ask question, don't keep it blank")
 
     with st.expander("ℹ️ - About this App"):
         st.markdown("""
