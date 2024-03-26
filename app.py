@@ -1,6 +1,7 @@
 import os
 from PIL import Image
 import streamlit as st
+from pathlib import Path
 from dotenv import load_dotenv; load_dotenv()
 from lyzr import QABot
 
@@ -32,7 +33,7 @@ def style_app():
     </style>
     """, unsafe_allow_html=True)
 
-# Literature Review Application
+# Event Planner QnA Application
     
 # replace this with your openai api key or create an environment variable for storing the key.
 os.environ["OPENAI_API_KEY"] = os.getenv('OPENAI_API_KEY') 
@@ -40,22 +41,31 @@ os.environ["OPENAI_API_KEY"] = os.getenv('OPENAI_API_KEY')
 
 def event_planner_qa():
     planner_qa = QABot.docx_qa(
-        input_files=['data\Event Planner Assistnace.docx']
+        input_files=[Path('data\Event Planner Assistnace.docx')]
     )
 
     return planner_qa
 
+def file_checker():
+    file = []
+    for filename in os.listdir('data'):
+        file_path = os.path.join('data', filename)
+        file.append(file_path)
+
+    return file
 
 if __name__ == "__main__":
     style_app()
-    st.subheader('Plan your dream event!')
-    question = st.text_input('Write you query')
-    if st.button('Submit'):
-        event_agent = event_planner_qa()
-        response = event_agent.query(question)
-        st.markdown('---')
-        st.subheader('Response')
-        st.write(response.response)
+    file = file_checker()
+    if file is not None:
+        st.subheader('Plan your dream event!')
+        question = st.text_input('Write you query')
+        if st.button('Submit'):
+            event_agent = event_planner_qa()
+            response = event_agent.query(question)
+            st.markdown('---')
+            st.subheader('Response')
+            st.write(response.response)
 
     with st.expander("ℹ️ - About this App"):
         st.markdown("""
